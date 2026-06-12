@@ -2,7 +2,7 @@ import tkinter as tk #Acá impotamos la librería Tkinter con apodo
 
 ventana = tk.Tk() # esta variable llama a la formula tk para crear la ventana principal 
 ventana.title("Musa") # esta función asigna el nombre que aparecerá arriba
-ventana.geometry("800x600") # Define el tamaño que queremos para la ventana
+ventana.geometry("900x750")# Define el tamaño que queremos para la ventana
 ventana.configure(bg="#450363")
 
 frame_inicio = tk.Frame(ventana,bg="#450363")
@@ -17,8 +17,56 @@ label_titulo.pack()
 entrada_titulo = tk.Entry(frame_nuevo,width=30)
 entrada_titulo.pack(pady=10)
 
+label_marca = tk.Label(frame_nuevo, text="Marca", bg="#450363", fg="white", font=("Arial", 12)) # todos estos entry funcionan como un intput para que el usuario ingrese datos
+label_marca.pack()
+
+entrada_marca = tk.Entry(frame_nuevo,width=30)
+entrada_marca.pack(pady=10)
+label_plataforma = tk.Label( frame_nuevo, text="Plataforma",bg="#450363", fg="white", font=("Arial", 12))
+label_plataforma.pack()
+entrada_plataforma = tk.Entry( frame_nuevo, width=30)
+
+entrada_plataforma.pack(pady=10)
+label_fecha = tk.Label(frame_nuevo,text="Fecha límite",bg="#450363",fg="white", font=("Arial", 12))
+label_fecha.pack()
+entrada_fecha = tk.Entry( frame_nuevo,width=30)
+entrada_fecha.pack(pady=10)
+
+prioridad = tk.StringVar()
+prioridad.set("Flexible")
+frame_prioridad = tk.Frame( frame_nuevo, bg="#450363")
+
+label_prioridad = tk.Label( frame_nuevo, text="Prioridad",bg="#450363",fg="white", font=("Arial", 12))
+label_prioridad.pack(pady=10)
+frame_prioridad.pack(pady=10)
+radio_critico = tk.Radiobutton( frame_prioridad,text="Crítico", variable=prioridad, value="Crítico")
+radio_critico.pack(side="left", padx=15)
+radio_importante = tk.Radiobutton(frame_prioridad,text="Importante", variable=prioridad, value="Importante")
+radio_importante.pack(side="left", padx=15)
+radio_flexible = tk.Radiobutton( frame_prioridad, text="Flexible",variable=prioridad, value="Flexible")
+radio_flexible.pack(side="left", padx=15)
+
+dificultad = tk.StringVar()
+dificultad.set("Media")
+label_dificultad = tk.Label(frame_nuevo,text="Dificultad", bg="#450363", fg="white", font=("Arial", 12))
+label_dificultad.pack(pady=10)
+frame_dificultad = tk.Frame(frame_nuevo, bg="#450363")
+frame_dificultad.pack(pady=5)
+radio_alta = tk.Radiobutton(frame_dificultad,text="Alta", variable=dificultad,value="Alta")
+radio_alta.pack(side="left", padx=15)
+radio_media = tk.Radiobutton(frame_dificultad,text="Media", variable=dificultad,value="Media")
+radio_media.pack (side="left", padx=15)
+radio_baja = tk.Radiobutton(frame_dificultad,text="Baja", variable=dificultad,value="Baja")
+radio_baja.pack (side="left", padx=15)
+
+
 def guardar_proyecto():
-    print(entrada_titulo.get())
+    print("Título:", entrada_titulo.get())
+    print("Marca:", entrada_marca.get())
+    print("Plataforma:", entrada_plataforma.get())
+    print("Fecha límite:", entrada_fecha.get())
+    print("Prioridad:", prioridad.get())    
+    print("Dificultad:", dificultad.get())
 boton_guardar = tk.Button(frame_nuevo,text="Guardar",command=guardar_proyecto)
 boton_guardar.pack(pady=20)
 
