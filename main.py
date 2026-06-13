@@ -1,5 +1,7 @@
 import tkinter as tk #Acá impotamos la librería Tkinter con apodo 
 
+proyectos = []
+
 ventana = tk.Tk() # esta variable llama a la formula tk para crear la ventana principal 
 ventana.title("Musa") # esta función asigna el nombre que aparecerá arriba
 ventana.geometry("900x750")# Define el tamaño que queremos para la ventana
@@ -8,6 +10,7 @@ ventana.configure(bg="#450363")
 frame_inicio = tk.Frame(ventana,bg="#450363")
 
 frame_agenda = tk.Frame(ventana, bg="#450363")
+frame_lista = tk.Frame(frame_agenda, bg="#450363")
 
 frame_nuevo = tk.Frame(ventana,bg="#450363")
 titulo_nuevo = tk.Label(frame_nuevo,text="Nuevo Proyecto",font=("Arial", 30, "bold"),bg="#450363",fg="white")
@@ -58,34 +61,47 @@ radio_media = tk.Radiobutton(frame_dificultad,text="Media", variable=dificultad,
 radio_media.pack (side="left", padx=15)
 radio_baja = tk.Radiobutton(frame_dificultad,text="Baja", variable=dificultad,value="Baja")
 radio_baja.pack (side="left", padx=15)
-
+def volver_inicio():# Todo este codigo nos da la opción de volver al menú principal de musa 
+    frame_agenda.pack_forget()
+    frame_nuevo.pack_forget()
+    frame_inicio.pack(fill="both", expand=True)
 
 def guardar_proyecto():
-    print("Título:", entrada_titulo.get())
-    print("Marca:", entrada_marca.get())
-    print("Plataforma:", entrada_plataforma.get())
-    print("Fecha límite:", entrada_fecha.get())
-    print("Prioridad:", prioridad.get())    
-    print("Dificultad:", dificultad.get())
-boton_guardar = tk.Button(frame_nuevo,text="Guardar",command=guardar_proyecto)
+    proyecto = { "titulo": entrada_titulo.get(), "marca": entrada_marca.get(), "plataforma": entrada_plataforma.get(), "fecha": entrada_fecha.get(), "prioridad": prioridad.get(), "dificultad": dificultad.get() }
+    proyectos.append(proyecto)
+    print(proyectos)
+
+    entrada_titulo.delete(0, tk.END)
+    entrada_marca.delete(0, tk.END)
+    entrada_plataforma.delete(0, tk.END)
+    entrada_fecha.delete(0, tk.END)
+
+    prioridad.set("Flexible")
+    dificultad.set("Media")
+boton_guardar = tk.Button( frame_nuevo, text="Guardar", command=guardar_proyecto)
 boton_guardar.pack(pady=20)
+boton_volver_nuevo = tk.Button( frame_nuevo,text="Volver",command=volver_inicio) # type: ignore
+boton_volver_nuevo.pack(pady=10)
 
 
 titulo_agenda = tk.Label(frame_agenda, text="Agenda", font=("Arial", 30, "bold"), bg="#450363",fg="white") # aquí estamos creando el frame de agenda para que se abra en la misma pantalla y no tener la necesidad de crear nuevas ventanas
 titulo_agenda.pack(pady=30)
+frame_lista.pack(pady=10)
 
 def mostrar_agenda():
-	frame_inicio.pack_forget() #esta línea hace que la pagina de inico desapazca 
-	frame_agenda.pack(fill="both", expand=True)# con esta aparece la página de agenda
+    frame_inicio.pack_forget()
+    for widget in frame_lista.winfo_children():
+        widget.destroy()
+    for proyecto in proyectos:
+        texto = (f"{proyecto['titulo']} | " f"{proyecto['plataforma']} | " f"{proyecto['fecha']}")
+        label_proyecto = tk.Label(frame_lista, text=texto, bg="#450363", fg="white", font=("Arial", 12) )
+        label_proyecto.pack(pady=5)
+    frame_agenda.pack(fill="both", expand=True)
+	
 
 def mostrar_nuevo():
     frame_inicio.pack_forget()
     frame_nuevo.pack(fill="both", expand=True)
-
-def volver_inicio():
-	frame_agenda.pack_forget()# con esto desaparece de nuevo la pantalla de agenda
-	frame_inicio.pack(fill="both", expand=True) #con esto aparece de nuevo la pantalla de inicio 
-
 boton_volver = tk.Button(frame_agenda, text="Volver", command=volver_inicio,)
 boton_volver.pack()
 
