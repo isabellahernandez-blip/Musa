@@ -10,7 +10,12 @@ ventana.configure(bg="#450363")
 frame_inicio = tk.Frame(ventana,bg="#450363")
 
 frame_agenda = tk.Frame(ventana, bg="#450363")
-frame_lista = tk.Frame(frame_agenda, bg="#450363")
+
+frame_pendientes = tk.Frame(frame_agenda, bg="#450363")
+
+frame_completando = tk.Frame(frame_agenda, bg="#450363")
+
+frame_completados = tk.Frame(frame_agenda, bg="#450363")
 
 frame_nuevo = tk.Frame(ventana,bg="#450363")
 titulo_nuevo = tk.Label(frame_nuevo,text="Nuevo Proyecto",font=("Arial", 30, "bold"),bg="#450363",fg="white")
@@ -67,7 +72,7 @@ def volver_inicio():# Todo este codigo nos da la opción de volver al menú prin
     frame_inicio.pack(fill="both", expand=True)
 
 def guardar_proyecto():
-    proyecto = { "titulo": entrada_titulo.get(), "marca": entrada_marca.get(), "plataforma": entrada_plataforma.get(), "fecha": entrada_fecha.get(), "prioridad": prioridad.get(), "dificultad": dificultad.get() }
+    proyecto = { "titulo": entrada_titulo.get(), "marca": entrada_marca.get(), "plataforma": entrada_plataforma.get(), "fecha": entrada_fecha.get(), "prioridad": prioridad.get(), "dificultad": dificultad.get(),"estado": "Pendiente"}
     proyectos.append(proyecto)
     print(proyectos)
 
@@ -80,21 +85,37 @@ def guardar_proyecto():
     dificultad.set("Media")
 boton_guardar = tk.Button( frame_nuevo, text="Guardar", command=guardar_proyecto)
 boton_guardar.pack(pady=20)
-boton_volver_nuevo = tk.Button( frame_nuevo,text="Volver",command=volver_inicio) # type: ignore
+boton_volver_nuevo = tk.Button( frame_nuevo,text="Volver",command=volver_inicio) 
 boton_volver_nuevo.pack(pady=10)
 
 
 titulo_agenda = tk.Label(frame_agenda, text="Agenda", font=("Arial", 30, "bold"), bg="#450363",fg="white") # aquí estamos creando el frame de agenda para que se abra en la misma pantalla y no tener la necesidad de crear nuevas ventanas
 titulo_agenda.pack(pady=30)
-frame_lista.pack(pady=10)
+label_pendientes = tk.Label( frame_agenda, text="📌 Pendientes", bg="#450363", fg="white", font=("Arial",16,"bold"))
+label_pendientes.pack(pady=10)
+frame_pendientes.pack()
+
+label_completando = tk.Label(frame_agenda,text="🚧 Completando", bg="#450363", fg="white", font=("Arial",16,"bold"))
+label_completando.pack(pady=10)
+frame_completando.pack()
+
+label_completados = tk.Label(frame_agenda,text="✅ Completados",bg="#450363",fg="white",font=("Arial",16,"bold"))
+label_completados.pack(pady=10)
+frame_completados.pack()
+
+
 
 def mostrar_agenda():
+    print(proyectos)
     frame_inicio.pack_forget()
-    for widget in frame_lista.winfo_children():
+    for widget in frame_pendientes.winfo_children():
+        widget.destroy()
+    for widget in frame_completando.winfo_children():
+        widget.destroy()
+    for widget in frame_completados.winfo_children():
         widget.destroy()
     for proyecto in proyectos:
-        texto = (f"{proyecto['titulo']} | " f"{proyecto['plataforma']} | " f"{proyecto['fecha']}")
-        label_proyecto = tk.Label(frame_lista, text=texto, bg="#450363", fg="white", font=("Arial", 12) )
+        label_proyecto = tk.Label( frame_pendientes, text=(f"{proyecto['titulo']}\n"f"{proyecto['plataforma']} | {proyecto['prioridad']}\n"f"Fecha: {proyecto['fecha']}"),bg="#35054C",fg="white",width=45,height=4,font=("Arial",11),relief="raised",bd=3)
         label_proyecto.pack(pady=5)
     frame_agenda.pack(fill="both", expand=True)
 	
