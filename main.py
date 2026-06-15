@@ -72,7 +72,20 @@ def volver_inicio():# Todo este codigo nos da la opción de volver al menú prin
     frame_inicio.pack(fill="both", expand=True)
 
 def guardar_proyecto():
-    proyecto = { "titulo": entrada_titulo.get(), "marca": entrada_marca.get(), "plataforma": entrada_plataforma.get(), "fecha": entrada_fecha.get(), "prioridad": prioridad.get(), "dificultad": dificultad.get(),"estado": "Pendiente"}
+    precio = 0
+    if dificultad.get() == "Baja":
+        precio = 100
+    elif dificultad.get() == "Media":
+        precio = 200
+    elif dificultad.get() == "Alta":
+        precio = 300
+    if prioridad.get() == "Importante":
+        precio += 50
+    elif prioridad.get() == "Crítico":
+        precio += 100
+
+    proyecto = { "titulo": entrada_titulo.get(), "marca": entrada_marca.get(), "plataforma": entrada_plataforma.get(), "fecha": entrada_fecha.get(), "prioridad": prioridad.get(), "dificultad": dificultad.get(),"estado": "Pendiente", "precio": precio,}
+    
     proyectos.append(proyecto)
     print(proyectos)
 
@@ -103,7 +116,13 @@ label_completados = tk.Label(frame_agenda,text="✅ Completados",bg="#450363",fg
 label_completados.pack(pady=10)
 frame_completados.pack()
 
+def pasar_a_completando(proyecto):
+    proyecto["estado"] = "Completando"
+    mostrar_agenda()
 
+def pasar_a_completado(proyecto):
+    proyecto["estado"] = "Completado"
+    mostrar_agenda()
 
 def mostrar_agenda():
     print(proyectos)
@@ -115,10 +134,33 @@ def mostrar_agenda():
     for widget in frame_completados.winfo_children():
         widget.destroy()
     for proyecto in proyectos:
-        label_proyecto = tk.Label( frame_pendientes, text=(f"{proyecto['titulo']}\n"f"{proyecto['plataforma']} | {proyecto['prioridad']}\n"f"Fecha: {proyecto['fecha']}"),bg="#35054C",fg="white",width=45,height=4,font=("Arial",11),relief="raised",bd=3)
-        label_proyecto.pack(pady=5)
+        text = (
+            f"{proyecto['titulo']}\n"
+            f"{proyecto['plataforma']} | {proyecto['prioridad']}\n"
+            f"Fecha: {proyecto['fecha']}\n"
+            f"Precio sugerido: Q{proyecto['precio']}"
+        )
+        if proyecto["estado"] == "Pendiente":
+            frame_tarjeta = tk.Frame(frame_pendientes, bg="#35054C")
+            frame_tarjeta.pack(pady=5)
+            label_proyecto = tk.Label(frame_tarjeta, text=text, bg="#35054C", fg="white", width=45, height=5)
+            label_proyecto.pack()
+            boton_empezar = tk.Button(frame_tarjeta, text="Empezar", command=lambda p=proyecto: pasar_a_completando(p))
+            boton_empezar.pack(pady=5)
+        elif proyecto["estado"] == "Completando":
+            frame_tarjeta = tk.Frame(frame_completando, bg="#5A2E7A")
+            frame_tarjeta.pack(pady=5)
+            label_proyecto = tk.Label(frame_tarjeta,text=text,bg="#5A2E7A",fg="white",width=45,height=5)
+            label_proyecto.pack()
+            boton_finalizar = tk.Button(frame_tarjeta,text="Finalizar",command=lambda p=proyecto: pasar_a_completado(p))
+            boton_finalizar.pack(pady=5)
+        elif proyecto["estado"] == "Completado":
+            frame_tarjeta = tk.Frame(frame_completados, bg="#2E8B57")
+            frame_tarjeta.pack(pady=5)
+            label_proyecto = tk.Label(frame_tarjeta,text=text,bg="#2E8B57",fg="white",width=45,height=5)
+            label_proyecto.pack()
     frame_agenda.pack(fill="both", expand=True)
-	
+
 
 def mostrar_nuevo():
     frame_inicio.pack_forget()
