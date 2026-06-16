@@ -72,6 +72,7 @@ def volver_inicio():# Todo este codigo nos da la opción de volver al menú prin
     frame_inicio.pack(fill="both", expand=True)
 
 def guardar_proyecto():
+    
     precio = 0
     if dificultad.get() == "Baja":
         precio = 100
@@ -96,6 +97,16 @@ def guardar_proyecto():
 
     prioridad.set("Flexible")
     dificultad.set("Media")
+
+def calcular_totales():
+    total_pendiente = 0
+    total_ganado = 0
+    for proyecto in proyectos:
+        if proyecto["estado"] == "Completado":
+            total_ganado += proyecto["precio"]
+        else:
+            total_pendiente += proyecto["precio"]
+    return total_ganado, total_pendiente
 boton_guardar = tk.Button( frame_nuevo, text="Guardar", command=guardar_proyecto)
 boton_guardar.pack(pady=20)
 boton_volver_nuevo = tk.Button( frame_nuevo,text="Volver",command=volver_inicio) 
@@ -116,6 +127,18 @@ label_completados = tk.Label(frame_agenda,text="✅ Completados",bg="#450363",fg
 label_completados.pack(pady=10)
 frame_completados.pack()
 
+label_resumen = tk.Label(frame_agenda,text="💰 Ganado: Q0 | 📌 Pendiente: Q0",bg="#450363",fg="white",font=("Arial", 14, "bold"))
+
+label_resumen.pack(pady=20)
+
+def pasar_a_completando(proyecto):
+    proyecto["estado"] = "Completando"
+    mostrar_agenda()
+
+def pasar_a_completado(proyecto):
+    proyecto["estado"] = "Completado"
+    mostrar_agenda()
+
 def pasar_a_completando(proyecto):
     proyecto["estado"] = "Completando"
     mostrar_agenda()
@@ -134,18 +157,13 @@ def mostrar_agenda():
     for widget in frame_completados.winfo_children():
         widget.destroy()
     for proyecto in proyectos:
-        text = (
-            f"{proyecto['titulo']}\n"
-            f"{proyecto['plataforma']} | {proyecto['prioridad']}\n"
-            f"Fecha: {proyecto['fecha']}\n"
-            f"Precio sugerido: Q{proyecto['precio']}"
-        )
+        text = (f"{proyecto['titulo']}\n"f"{proyecto['plataforma']} | {proyecto['prioridad']}\n"f"Fecha: {proyecto['fecha']}\n"f"Precio sugerido: Q{proyecto['precio']}")
         if proyecto["estado"] == "Pendiente":
             frame_tarjeta = tk.Frame(frame_pendientes, bg="#35054C")
             frame_tarjeta.pack(pady=5)
-            label_proyecto = tk.Label(frame_tarjeta, text=text, bg="#35054C", fg="white", width=45, height=5)
+            label_proyecto = tk.Label(frame_tarjeta,text=text,bg="#35054C",fg="white",width=45,height=5)
             label_proyecto.pack()
-            boton_empezar = tk.Button(frame_tarjeta, text="Empezar", command=lambda p=proyecto: pasar_a_completando(p))
+            boton_empezar = tk.Button(frame_tarjeta,text="Empezar",command=lambda p=proyecto: pasar_a_completando(p))
             boton_empezar.pack(pady=5)
         elif proyecto["estado"] == "Completando":
             frame_tarjeta = tk.Frame(frame_completando, bg="#5A2E7A")
@@ -159,8 +177,9 @@ def mostrar_agenda():
             frame_tarjeta.pack(pady=5)
             label_proyecto = tk.Label(frame_tarjeta,text=text,bg="#2E8B57",fg="white",width=45,height=5)
             label_proyecto.pack()
+    ganado, pendiente = calcular_totales()
+    label_resumen.config(text=f"💰 Ganado: Q{ganado} | 📌 Pendiente: Q{pendiente}")
     frame_agenda.pack(fill="both", expand=True)
-
 
 def mostrar_nuevo():
     frame_inicio.pack_forget()
