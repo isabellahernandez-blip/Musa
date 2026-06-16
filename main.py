@@ -11,6 +11,8 @@ frame_inicio = tk.Frame(ventana,bg="#450363")
 
 frame_agenda = tk.Frame(ventana, bg="#450363")
 
+frame_finanzas = tk.Frame(ventana, bg="#450363")
+
 frame_pendientes = tk.Frame(frame_agenda, bg="#450363")
 
 frame_completando = tk.Frame(frame_agenda, bg="#450363")
@@ -70,6 +72,7 @@ def volver_inicio():# Todo este codigo nos da la opción de volver al menú prin
     frame_agenda.pack_forget()
     frame_nuevo.pack_forget()
     frame_inicio.pack(fill="both", expand=True)
+    frame_finanzas.pack_forget()
 
 def guardar_proyecto():
     
@@ -112,9 +115,37 @@ boton_guardar.pack(pady=20)
 boton_volver_nuevo = tk.Button( frame_nuevo,text="Volver",command=volver_inicio) 
 boton_volver_nuevo.pack(pady=10)
 
+def actualizar_finanzas():
+    ganado = 0
+    pendiente = 0
+    for proyecto in proyectos:
+        if proyecto["estado"] == "Completado":
+            ganado += proyecto["precio"]
+        else:
+            pendiente += proyecto["precio"]
+    cantidad = len(proyectos)
+    texto = (f"💰 Total ganado: Q{ganado}\n\n"f"📌 Pendiente de cobrar: Q{pendiente}\n\n"f"📊 Total proyectos: {cantidad}")
+    for widget in frame_lista_finanzas.winfo_children():
+        widget.destroy()
+    label_finanzas.config(text=texto)
+    for proyecto in proyectos:
+        if proyecto["estado"] == "Completado":
+            label_proyecto = tk.Label(frame_lista_finanzas,text=f"✅ {proyecto['titulo']} - Q{proyecto['precio']}",bg="#450363",fg="white",font=("Arial", 12))
+        label_proyecto.pack(pady=2)
+
 
 titulo_agenda = tk.Label(frame_agenda, text="Agenda", font=("Arial", 30, "bold"), bg="#450363",fg="white") # aquí estamos creando el frame de agenda para que se abra en la misma pantalla y no tener la necesidad de crear nuevas ventanas
 titulo_agenda.pack(pady=30)
+titulo_finanzas = tk.Label(frame_finanzas,text="Finanzas",font=("Arial", 30, "bold"),bg="#450363",fg="white")
+titulo_finanzas.pack(pady=20)
+label_finanzas = tk.Label(frame_finanzas,text="",bg="#450363",fg="white",font=("Arial", 16))
+label_finanzas.pack(pady=20)
+frame_lista_finanzas = tk.Frame(frame_finanzas,bg="#450363")
+frame_lista_finanzas.pack(pady=10)
+boton_volver_finanzas = tk.Button(frame_finanzas,text="Volver",command=volver_inicio)
+
+boton_volver_finanzas.pack(pady=20)
+
 label_pendientes = tk.Label( frame_agenda, text="📌 Pendientes", bg="#450363", fg="white", font=("Arial",16,"bold"))
 label_pendientes.pack(pady=10)
 frame_pendientes.pack()
@@ -182,8 +213,18 @@ def mostrar_agenda():
     frame_agenda.pack(fill="both", expand=True)
 
 def mostrar_nuevo():
+    
     frame_inicio.pack_forget()
     frame_nuevo.pack(fill="both", expand=True)
+
+def mostrar_finanzas():
+    frame_inicio.pack_forget()
+    frame_agenda.pack_forget()
+    frame_nuevo.pack_forget()
+
+    actualizar_finanzas()
+    frame_finanzas.pack(fill="both", expand=True)
+
 boton_volver = tk.Button(frame_agenda, text="Volver", command=volver_inicio,)
 boton_volver.pack()
 
@@ -197,7 +238,7 @@ boton_agenda.pack(pady=10) # esta función coloca el botón en la ventana y le a
 #copiamos el formato del botón anterior con los próximos 2 botones 
 boton_nuevo = tk.Button (frame_inicio, text="Ingresar Nuevo Proyecto", bg="#35054C", fg="white",width=20,height=3, command=mostrar_nuevo) # esta funci´n crea el botón con el texto de Ingresar Nuevo Proyecto
 boton_nuevo.pack(pady=10) # esta función coloca el botón en la ventana y le asigna un espacio de 10 píxeles por debajo y un tamaño de 30 de ancho y 3 de alto
-boton_completados = tk.Button (frame_inicio, text="Completados", bg="#35054C", fg="white",width=20,height=3) # esta funci´n crea el botón con el texto de Completados
+boton_completados = tk.Button(frame_inicio,text="Completados",bg="#35054C",fg="white",width=20,height=3,command=mostrar_finanzas)
 boton_completados.pack(pady=10) # esta función coloca el botón en la ventana y le asigna un espacio de 10 píxeles por debajo y un tamaño de 30 de ancho y 3 de alto
 
 ventana.mainloop () # mantiene la ventana abierta por que si no valimos
