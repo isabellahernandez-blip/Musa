@@ -1,4 +1,4 @@
-# MusaDescripción:
+# Musa:
 MUSA es una aplicación desarrollada en Python con Tkinter para ayudar a creadores de contenido a organizar proyectos de marcas.
 
 Funciones:
